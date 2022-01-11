@@ -1,3 +1,5 @@
+import { getDomElem, ladders, ladders2, ladders3, ladders4, snakes, snakes2, snakes3, snakes4, setCookie, sounds, timeObj, loop, recordedScores } from "./globals.js"
+
 // Rounds float point number to specified decimal places 
 function round(num, decimalPlaces = 0) { 
   num = Math.round(num + "e" + decimalPlaces)
@@ -32,7 +34,7 @@ class Player{
 	move(index){
 	  const rowIndex = parseInt(index[0])
 	  let colIndex = parseInt(index[1]) 
-	  console.log(`index = ${index}`)
+	  
 	  if(rowIndex % 2 === 1) {
 	  		colIndex = 9 - colIndex	
 	  }
@@ -71,7 +73,7 @@ class Cell {
 }
 
 const cells = [[], [], [], [], [], [], [], [], [], []] // Board game squares
-const gameBoards = ["board1.png", "board2.jpg", "board3.jpg", "board4.jpg", "board5.jpg"]
+const gameBoards = ["images/board1.png", "images/board2.jpg", "images/board3.jpg", "images/board4.jpg", "images/board5.jpg"]
 const board = getDomElem("#board")
 const backImage = getDomElem("#back")
 const playerHeight = board.height * 0.05
@@ -86,7 +88,7 @@ const playerInitials = getDomElem(".initials")
 // Round ending message 
 const message = document.querySelector(".completed")
 //Front screen element offset
-function shiftElement(selector, varName){
+export function shiftElement(selector, varName){
 		const elem = document.querySelector(selector)
 		const styles = getComputedStyle(elem)
 		const value = String(styles.getPropertyValue(varName)).trim() 
@@ -154,6 +156,10 @@ function updateScoreRecords(){
    backToMenu()
 }
 
+document.querySelector("#submitUserName").addEventListener("click", e => {
+    updateScoreRecords()
+})
+
 let time = 0
 let timeReset = true
 let challengeDelay = false
@@ -163,7 +169,7 @@ const CLOCK_SPEED = 2
 
 
 // GAME							
-class Game{
+export default class Game{
   constructor(targets, randomCallback, state){
     this.random = randomCallback;
     this.targets = targets;
@@ -218,7 +224,7 @@ class Game{
    this.state.index = "00"
    this.correctPos = 0
    this.finalPos = "00"
-   this.state.time = 1600
+   this.state.time = 300
    this.initTime =  this.state.time
    this.currentTime = this.state.time
    
@@ -229,9 +235,11 @@ class Game{
    this.isButtonPressed = false;
    this.targets.labelExpr.innerHTML = "" 
      document.querySelector(".gameStart").style.left = shiftElement(".gameStart", "--left")
-   startTime = undefined
+   timeObj.startTime = undefined
    this.beginPlay()
  }
+ 
+ static  game = null //Game board state
  
 /* Starts the game loop */
  beginPlay(){ 
@@ -243,7 +251,7 @@ class Game{
     this.started = true
     introMessage.classList.add("slideRight")}, 1000)		
    setCookie("gameState", `${this.difficulty},${this.isGameOver},${this.scoreTotal},${this.currentTime},${this.finalPos},${this.numCorrectMoves},${this.numOfMoves},${this.roundNum},${this.totalTime},${this.state.isChallenge}`)
-    startTime = undefined 
+    timeObj.startTime = undefined 
 	window.requestAnimationFrame(loop) 
  }
  
@@ -348,7 +356,7 @@ class Game{
     if(this.isButtonPressed) {
      this.numOfMoves ++;
      this.state.numOfMoves =   this.numOfMoves;}
-     console.log(`num_noves = ${this.numOfMoves }`);
+     
    if(this.correctPos == -1){
      this.isButtonPressed = false;
      this.targets.btnGenerator.style.background  = "hsla(120, 100%, 50%, 1.0)";
@@ -359,8 +367,9 @@ class Game{
 	
 	/* Ends the game after round is completed  or starts the next round */
 	endMessage(){
+	    const FINAL_ROUND = 1
 		this.roundNum++
-			if(this.roundNum > 2){
+			if(this.roundNum > FINAL_ROUND ){
 						this.endGame()
 			}		
 		 else{	
@@ -429,7 +438,6 @@ class Game{
 		   let offset = 9;  
 		   for(let col = 0; col < numOfCols; col++){
 				  if(row % 2 === 1){
-				    console.log(`row: ${row}`)
 				 	  cells[row][col].index = `${row}${offset}`;	
 				 	  offset--;	
 			  	 }else{
@@ -552,7 +560,7 @@ class Game{
       /* Restart timer for challenge phase */
       if(challengeDelay){
        challengeDelay = false
-       startTime = undefined  
+       timeObj.startTime = undefined  
      }
     this.state.time = this.currentTime; 
     if(Game.isChallenge){
@@ -643,3 +651,4 @@ class Game{
     register.disabled = score > lastScore ? false : true
   }// end of closeScoreScreen
 }
+
