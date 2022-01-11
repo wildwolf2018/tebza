@@ -1,62 +1,112 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="This is a game programmer's portfolio website">
-        <link href="portfolio.css" rel="stylesheet">
-        <title>Portfolio of Teboho Thage</title>
-   </head>
-   <body>
-        <div class="nav">
-       				<div class="projects">
-       								<a href="index.html">ABOUT</a>
-       				</div>
-       				<div class="blog">
-       								<a href="blog.html">BLOG</a>
-       				</div>
-       				<div class="stuff">
-       								<a href="cool_stuff.html">GRAPHICS</a>
-       				</div>
+<html lang="en">
+<head>
+    <title>Snakes, Ladders and Numbers</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/game.css" rel="stylesheet">
+    <script type="module" defer src="js/globals.js"></script>
+    <script type="module" defer src="js/game.js"></script>
+    <script type="module" defer src="js/main.js"></script>
+</head>
+<body>
+    <!-- MENU -->
+    <div class="menu">
+        <button id="upgrade">Panic Mode</button><button id="play">Play</button>
+        <button id="resume">Resume</button>
+        <button id="high-score">High Score</button>		<button id="help">Help</button>
+    </div>
+    <!-- GAME BOARD -->
+    <div class="z-order">
+        <div class="top-container">
+            <div class="flex-item-score">
+                SCORE: 0
+            </div>
+            <div>
+                <img class="confirm" src="" alt="">
+            </div>
+            <div class="flex-item-time">
+            </div>
         </div>
-     <header>
-     				<h1 class="heading">Teboho Thage</h1>
-     </header>
-       <div class="main">
-     		  	<div class="intro">
-     			  <header>
-     			  			<h2 class="about_me">Who am I ?</h2></header>
-     				<p class="about">Well... I am a video games programmer with a keen interest in 2D and 3D Graphics Mathematics and animations. I also do front end web development work using HTML5, CSS, Javascript, React and other web framworks.<br>I live in Johannesburg, South Africa and  have a BSc Information Technology degree from the University of Johannesburg.</p></div>
-     				
-     	<div class="integer">
-     			   <header><h2 class="portfolio">Games</h2></header>
-     				<header>
-     						<span id="proj1">Integer Madness</span>	
-     				 </header>
-     						 <img id="madness-screenshot" src="level_one.jpg"  alt="Screenshot of level one">
-     						 <p>Have you ever wanted to be able to move forward and backwards in the classic board game Snakes and Ladders? Have fun practicing integer addition? Well, that's the story of this new game. Game was created using HTML5, Javascript and CSS. Coming soon to PC and mobile platforms. View the <a href="https://youtu.be/unLwZgaIqBQ" style="color:hsla(240,100%,50%,1.0);text-decoration:none;" ><em>trailer</em></a><a id="demo" href="https://wildwolf2018.github.io/tebza/game.html" target="_blank">Play demo</a></p><hr></div>
-     					
-     				<div class="urban-hunter">
-     						<header>
-     						   <span id="proj2">Urban  Hunter</span>	
-     						 </header>	
-     						 <img id="hunter"	src="hunter_shot.jpg" alt="Screenshot of Urban Hunter game">
-     						 <p>2D shooter about a bounty hunter chasing a criminal gang. Inspired by classic 90's 2D shooters. Created using C#, Unity and Blender 3D. Source code available on <a href="https://github.com/wildwolf2018/urban_hunter" style="color:hsla(240,100%,50%,1.0);text-decoration:none;"><em>github.</em></a></p><hr></div>
-     						 
-     			<div class="collector">
-     					  <header>
-     						   <span id="proj3">Shape Collector</span>	
-     						 </header>	
-     						 <img id="collector"	src="collector.jpg" alt="Screenshot of Shape Collector game">
-     						 <p>Do you enjoy endless runner type games? If yes, then you will love running around the yard collecting shapes. The game was created using C++, OpenGL and Visual Studio. Source code available on <a href="https://github.com/wildwolf2018/shape_collector_vs" style="color:hsla(240,100%,50%,1.0);text-decoration:none;"><em>github</em></a></p>
-     			
-       </div>
-         	<p class="p-footer"><em><strong>You can find me on :</strong></em></p>
-     			<div class="footer">
-
-     							<img id="facebook" src="facebook-icon.jpg" width="50px"><span id="ficon">  @thabogames</span>
-     			<img id="twitter" src="logo-twitter.png" width="50px"><span id="twitter-icon">  @thabo_thage</span> 
-     <img id="instagram" src="logo-instagram.png" width="50px"><span id="iicon"> tebohothg</span> <img id="linkedin" src="linkedin-logo.png" width="50px"><span id="licon">teboho-thage</span></div></div>
-     		</div>
-   </body>
+        <div class="board-container">
+            <img id="board" class="top" src="images/board1.png" alt="game board">
+            <div class="player"></div>
+        </div>
+        <button id="gen">Generate</button>
+        <span id="exp"><strong>0 + 0</strong></span><!--<span id="counter">5</span>-->
+    </div>
+    <!-- SPLASH AND DIALOGUE -->
+    <div class="intro-bg">
+        <div class="splash"></div>
+    </div>
+    <div class="dialog">
+        <div class="mode-title">
+            Choose level of difficulty
+        </div>
+        <span id="easy">Easy</span>
+        <span id="hard">Hard</span>
+    </div>
+    <!-- GAME START -->
+    <div class="gameStart"></div>
+    <!-- ROUND END -->
+    <div class="completed">
+        Round Completed
+    </div>
+    <!-- GAME OVER -->
+    <img class="game-over" src="images/gameover.png" class="game-over" alt="game over image">
+    <audio id="game_sound">
+        <source src="sounds/app_src_main_res_raw_intro.mp3" type="audio/mpeg"></audio>
+    <!-- SCORE RESULTS -->
+    <div class="score-sheet">
+        <span id="score-label">Precision</span>
+        <span id="score-amount">1000000</span>
+        <span id="time-label">Time Bonus</span>
+        <span id="time-bonus">10000</span>
+        <span id="final-scorelabel">Final Score</span>
+        <span id="final-score">1000000</span>
+        <button id="register">Register your score!</button><button id="close">Close</button>
+    </div>
+    <!-- HIGH SCORES  -->
+    <div class="score-screen-container">
+        <div class="score-screen"	>
+            <div id="high-scores-title">
+                HIGH SCORES
+            </div>
+            <span id="pos-one"></span>
+            <span id="pos-one-score"></span>
+            <span id="pos-two"></span>
+            <span id="pos-two-score"></span>
+            <span id="pos-three"></span>
+            <span id="pos-three-score"></span>
+            <span id="pos-four"></span>
+            <span id="pos-four-score"></span>
+            <span id="pos-five"></span>
+            <span id="pos-five-score"></span>
+            <button id="close-scores"><span>Back</span></button>
+        </div>
+    </div>
+    <!-- REGISTER -->
+    <div class="initials">
+        <div class="form-container">
+            <div class="form-label">
+                <label id="userNameLabel" for="username">Enter your username</label>
+            </div>
+            <input type="text" id="username" name="username" placeholder="username"	>
+            <button id="submitUserName" >Finnish</button>	<span id="error"></span>
+        </div>
+    </div>
+    <!-- HELP -->
+    <div class="help-container">
+        <div class="help">
+            <p>
+                <span id="title1">The Menu Screen</span><br>1. To start new game  press Play on the menu screen.<br>2. To play previously saved game, press Resume on menu screen.<br>3. To view high scores, press High Scores button on the menu screen.<br>4. To get help, press Help on the menu screen.<br><span id="notice" style="hsla(360, 100%, 50%, 1.0);">Note! The game uses cookies to store game state.</span><br> <span id="title2">Choosing Modes</span><br>Change the game difficulty level by pressing  easy or hard mode button on  title screen.<br><span id="title3">Game Board</span><br>1. To move the player sprite, you first generate an arithmetic expression by pressing the Generate button.<br>2. The resulting expression will tell you by how many squares to move forward or backward.<br>3. Positive means moves forward and negative means move backward.<br>4. Click on the square you have chosen on the game board.<br>5. The game ends when the timer reaches 0 or you have reached the the square numbered 100.<br>6. If your total score is high enough, you can enter your username or any name to be displayed on the high scores screen.
+            </p>
+            <button id="close-help">Back</button>
+        </div>
+    </div>
+    <div class="congrats">
+        CONGRATULATIONS!<br>
+        YOU ARE THE SUPREME CHAMPION
+    </div>
+</body>
 </html>
