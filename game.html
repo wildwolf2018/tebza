@@ -1,457 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-		<head>
-				<title>Snakes, Ladders and Numbers
-				</title>
-				<meta name="viewport"        content="width=device-width, initial-scale=1">
-				<link href="game.css" rel="stylesheet">
-				</head>
-		<body>
-				<!-- MENU -->
-			<div class="menu">
-		<button id="upgrade">Panic Mode</button><button id="play">Play</button>
-					<button id="resume">Resume</button>
-<button id="high-score">High Score</button>		<button id="help">Help</button></div>	
-   <!-- GAME BOARD -->		
-<div class="z-order">	
-			 <div class="top-container">
-		  		<div class="flex-item-score">SCORE: 0</div>
-		 <div><img class="confirm" src=""  alt=""></div><div class="flex-item-time">
-		  		</div>
-		  	</div>
-		  	<div class="board-container">
-			   <img id="board" class="top" src="board1.png" alt="game board">
-			   <div class="player"></div>
-				</div>
-			 <button id="gen">Generate</button>
-	<span id="exp"><strong>0 + 0</strong></span><!--<span id="counter">5</span>--></div>	
-		<!-- SPLASH AND DIALOGUE -->
-		 <div class="intro-bg">
-			<div class="splash"></div></div>
-		<div class="dialog">
-				<div class="mode-title">Choose level of difficulty</div>
-				<span id="easy">Easy</span>
-	     <span id="hard">Hard</span>	</div>
-	     <!-- GAME START -->
-	     <div class="gameStart"></div>	
-	     <!-- ROUND END -->
-		<div class="completed">Round Completed</div>   
-	     <!-- GAME OVER -->
-	   <img class="game-over" src="gameover.png" class="game-over" alt="game over image">
-				<audio id="game_sound">
-				 <source src="app_src_main_res_raw_intro.mp3" type="audio/mpeg"></audio>
-				 <!-- SCORE RESULTS -->
-		<div class="score-sheet">
-				<span id="score-label">Precision</span>
-				<span id="score-amount">1000000</span>
-     	<span id="time-label">Time Bonus</span>
-				<span id="time-bonus">10000</span>
-      	<span id="final-scorelabel">Final Score</span>
-				<span id="final-score">1000000</span>
-			<button id="register">Register your score!</button><button id="close">Close</button></div>
-			<!-- HIGH SCORES  -->
-<div class="score-screen-container">
-<div class="score-screen"	>
-			<div id="high-scores-title">HIGH SCORES</div>
-		<span id="pos-one"></span>
-				<span id="pos-one-score"></span>
-     	<span id="pos-two"></span>
-				<span id="pos-two-score"></span>
-      	<span id="pos-three"></span>
-				<span id="pos-three-score"></span>
-		   	<span id="pos-four"></span>
-				<span id="pos-four-score"></span>
-		   	<span id="pos-five"></span>
-				<span id="pos-five-score"></span>
-			<button id="close-scores"><span>Back</span></button>		</div></div>
-			<!-- REGISTER -->
-   <div class="initials">
-				<div class="form-container"><div class="form-label">
-						<label id="userNameLabel" for="username">Enter your username</label></div>
-			<input type="text" id="username" name="username" placeholder="username"	>
-		<button id="submitUserName" onclick="updateScoreRecords()">Finnish</button>	<span id="error"></span> </div> 
-   </div>
-   <!-- HELP -->
-	<div class="help-container"><div class="help">								
-				<p><span id="title1">The Menu Screen</span><br>1. To start new game  press Play on the menu screen.<br>2. To play previously saved game, press Resume on menu screen.<br>3. To view high scores, press High Scores button on the menu screen.<br>4. To get help, press Help on the menu screen.<br><span id="notice" style="hsla(360, 100%, 50%, 1.0);">Note! The game uses cookies to store game state.</span><br> <span id="title2">Choosing Modes</span><br>Change the game difficulty level by pressing  easy or hard mode button on  title screen.<br><span id="title3">Game Board</span><br>1. To move the player sprite, you first generate an arithmetic expression by pressing the Generate button.<br>2. The resulting expression will tell you by how many squares to move forward or backward.<br>3. Positive means moves forward and negative means move backward.<br>4. Click on the square you have chosen on the game board.<br>5. The game ends when the timer reaches 0 or you have reached the the square numbered 100.<br>6. If your total score is high enough, you can enter your username or any name to be displayed on the high scores screen.</p><button id="close-help">Back</button></div></div>	
-	 <div class="congrats">CONGRATULATIONS!<br>
-				YOU ARE THE SUPREME CHAMPION</div>
-<script src="js/globals.js"></script>
-	 <script  src="js/game.js"></script>
-	<script>	 								
-//Returns a selector's style value
-function shiftElement(selector, varName){
-		const elem = document.querySelector(selector)
-		const styles = getComputedStyle(elem)
-		const value = String(styles.getPropertyValue(varName)).trim() 
-		return value
-}		
-								
-// Initializes the game state
-function startGame(targets, rand){
-  game = new Game(targets, rand, gameState)
-  game.initializeGrid()
-  game.positionPlayer()
-  game.init(recordedScores)
- }	
-
-// Game loop 
-let gameTime = gameState.time * 1000
-function loop(timestamp){
-	if(startTime == undefined)
-		 startTime = timestamp
-		
-	const elapsed = timestamp - startTime;
-	if(previousTime !== timestamp){
-		 let time = Math.min(0.001 * elapsed, gameTime)
-  if(!game.started){
-	    startTime = undefined
-      time = 0
-      game.update(time)
-   }else{
-	  	 game.update(time)
-  }// if-else
-	
-	if(elapsed < gameTime){
-				previousTime = timestamp
-		window.requestAnimationFrame(loop)
-		}// if
- }// if	
-}// end loop
-
-/* Round number introduction message */
-const introMessage = getDomElem(".gameStart")
-
-/* Starts gameplay after splash screen fadeout */
-function beginPlay(game, eventTarget, loop){ 
-  introMessage.innerHTML = `Round ${gameState.round}`
-	setTimeout(()=> {
-    game.started = true 
-		eventTarget.audio.pause()
-	  	  introMessage.classList.add("slideRight")}, 2000)		
-	 window.requestAnimationFrame(loop)
-}
- 	
-/* Tests whether string is eqaul to boolean true value */		
-function isEqualToTrue(s, text = "true"){
-  const index = s.indexOf(text)
-  return s.substring(index, index + text.length) === text
-}
-	
-function getStateCookieData(gameState, state){	
-		gameState.difficulty = state[0]
-  	gameState.gameOver = isEqualToTrue(state[1]) 
-   gameState.score = parseInt(state[2])
-   gameState.time = parseInt(state[3])
-   gameState.index = state[4]
-   gameState.correct = parseInt(state[5])
-   gameState.numOfMoves = parseInt(state[6])	
-   gameState.round = parseInt(state[7])
-   gameState.totalTime = parseInt(state[8])
-   gameState.isChallenge = parseInt(state[9])
-	}
-
- 
-const defaultScores = {}
-defaultScores.initials  = [...recordedScores.initials]
-defaultScores.scores  = [...recordedScores.scores]
-
-function loadDefaultScores(){
-	for(let i = 0; i < 5; i++){
-    recordedScores.initials[i] = defaultScores.initials[i]
-     recordedScores.scores[i] = defaultScores.scores[i]
-  } 	
-}
-
-function loadHighScores(recordedScores){
- const cookieValue = checkCookie("scores", "AAA 5000,BBB 4000,CCC 3000,DDD 2000,EEE 1000")		
- if(cookieValue != "")	{
-    const scores = cookieValue.split(",") 
-    for(let i = 0; i < 5; i++){
-     recordedScores.initials[i] = scores[i].substring(0, scores[i].indexOf(" ")) 
-     recordedScores.scores[i] = scores[i].substring(scores[i].indexOf(" ") + 1)
-    }  
-  }else{  
-  console.log("load default scores")
-    loadDefaultScores()
-  }				
-}	
-
-function displayScores(recordedScores){
-  for(let i = 0; i < 5; i++){
-document.querySelector(initialsIds[i]).innerHTML = `${i+1}. ${recordedScores.initials[i]}`
-document.querySelector(scoresIds[i]).innerHTML = recordedScores.scores[i]
-  }
-}
-
-function disableMenuButtons(){
-			challengeButton.disabled = true
-			playButton.disabled = true
-			resumeButton.disabled = true
-			highScoreButton.disabled = true 
-			helpButton.disabled = true
-}
-
-function modeHandler(evt){
-introScreen.classList.remove("intro-fadein")
-choiceDialog.classList.remove("intro-fadein")
- 
-disableModeButtons()
-  gameState.difficulty = evt.target.innerHTML
-  chooseMode(gameState.difficulty) 
-  phaseOut()
-}
-
-
-function disableModeButtons(){
- splashToLevel = true
-   easyMode.removeEventListener("click", modeHandler)		
-   hardMode.removeEventListener("click", modeHandler)
-}
-
-// Get the previous game state from cookie
-window.addEventListener("load", e => {
-  let name = checkCookie("gameState",`"Easy",${true},0,0,00,0,0,1,0,0`)
-  if(name != ""){
-   getStateCookieData(gameState, name.split(","))
-  }
-   resumeButton.disabled =   gameState.gameOver
-   loadHighScores(recordedScores)
-})
-
-const menu = getDomElem(".menu")
-const level = getDomElem(".z-order")
-const introScreen = getDomElem(".intro-bg")
-const choiceDialog = getDomElem(".dialog")
-const highScores = getDomElem(".score-screen-container")
-const help = getDomElem(".help-container")
-
-function menuFadeOut(gameBoard){
- 	 gameBoard.audio.play() 	    
-   menu.classList.add("splash-fadeout")  
-   introScreen.style.top = shiftElement(".intro-bg","--top")
-   introScreen.style.left = shiftElement(".intro-bg","--left")
-   choiceDialog.style.top=shiftElement(".dialog","--top")  	  
-   choiceDialog.style.left=shiftElement(".dialog","--left")
- }
-  
-menu.addEventListener("animationend", e => { 
-    menu.style.top = "100vh"
-    menu.style.opacity="1.0"
- }, false)
- 
- function chooseMode(mode){
- 	const black = "rgba(0,0,0,0.0)"
- 	const white = "rgba(255,255,255,0.5)"
- 	let easy = easyMode.style
- 	let hard = hardMode.style
- 	if(mode==="Easy"){ 
- 	  easy.background = white
- 	  hard.background = black 
- 	  easy.color="rgba(0, 255,0,1.0)"
- 	}else{
- 		easy.background = black
- 	  hard.background = white
- 	  hard.color="rgba(0,255,0,1.0)"
-   }	
- }
- 
- function setDefaultState(gameState){
-   gameState.gameOver = false
-   gameState.difficulty = "Easy"
-   gameState.score = 0
-   gameState.time = 300
-   gameState.index = "00"
-   gameState.correct = 0 
-   gameState.numOfMoves = 0
-   gameState.round = 1
-   gameState.totalTime = 0
-   gameState.isChallenge = 0
- }
- 
-function phaseOut(){
- splashToLevel = true
-choiceDialog.classList.add("splash-fadeout") 
-introScreen.classList.add("splash-fadeout")
- }
- 
- //Challenge Phase
- challengeButton.addEventListener("click", e =>{
- 			disableMenuButtons() 		 		
- 			document.querySelector(".flex-item-score").style.color="#FFF" 		
- 			document.querySelector(".z-order").style.backgroundColor="#333"
- 			setDefaultState(gameState)
- 			gameState.time = 15
- 			gameTime = gameState.time * 1000
- 			gameState.difficulty = "Hard"
- 			gameState.isChallenge = 1
- 			Game.isChallenge = true
- 			
-     splashToLevel =true
-     menuFadeOut(boardLevelElems)
-     introScreen.style.opacity="1.0"
-     choiceDialog.style.opacity="1.0"
-     chooseMode("Hard")			  
-     phaseOut()
-     document.querySelector(".flex-item-time").style.color="#FF0000"   
-     document.querySelector(".flex-item-time").classList.add("counter")
- })
- // Proceed to title screen
-playButton.addEventListener("click", e =>{ 
- disableMenuButtons()
- Game.isChallenge = false
- gameState.isChallenge = 0
- setDefaultState(gameState)
- menuFadeOut(boardLevelElems)
- introScreen.classList.add("intro-fadein")
- choiceDialog.classList.add("intro-fadein")
- })
-
-// Resume play 
-resumeButton.addEventListener	("click", e =>{
-  if(gameState.isChallenge == 1){
-     setDefaultState(gameState)
-     resumeButton.disabled = true
-     alert("No previous unfinished game")
-  	 return
-  }
-   disableMenuButtons()
-   Game.isChallenge = false
-   gameState.isChallenge = 0
-   splashToLevel =true
-   menuFadeOut(boardLevelElems)
-   introScreen.style.opacity="1.0"
-   choiceDialog.style.opacity="1.0"
-	 chooseMode(gameState.difficulty)			  
-   phaseOut()
-	})
-
-
-// View high scores
-const menuToScores =  getDomElem(".score-screen-container") 
-highScoreButton.addEventListener("click",e => { 
-  displayScores(recordedScores)	
- 		menu.style.top = "100vh"
- 		highScores.style.left = shiftElement(".score-screen-container", "--left")
-	})
-
-// Return to menu screen from high score screen
-const scoresToMenu = getDomElem("#close-scores") 		
-scoresToMenu.addEventListener("click", e => {
-  	menu.style.top = shiftElement(".menu", "--top")
- 		highScores.style.left="-100vw"	
- })
- 
-function addVerticalScroll(selector){
-	document.body.style.overflow="scroll"
-  document.body.style.overflowX="hidden"
-  document.querySelector(selector).style.overflow="scroll"
-  document.querySelector(selector).style.overflowY="scroll"
-  document.querySelector(selector).style.overflowX="hidden"
-  document.querySelector(selector).scrollTop = 0
-}
-
-function disableVerticalScroll(selector){
-	document.body.style.overflow="hidden"
-  document.querySelector(selector).style.overflow="hidden"
-  document.querySelector(selector).style.overflowY="hidden"
-}
-
-// View help screen
-helpButton.addEventListener("click",e => { 	
- addVerticalScroll("p")
-				
-help.style.left= shiftElement(".help-container", "--left")
-document.querySelector("body").style.backgroundColor=shiftElement(".help-container", "--body-bg")
- 		help.style.visibility ="visible"
-  	help.style.zIndex="45"
- 		menu.style.left = "-200vw"		
- 		helpToMenu.disabled = false	})
-
-// Return to menu screen from help screen
-const helpToMenu = document.querySelector("#close-help") 		
- helpToMenu.addEventListener("click", e => {
-  disableVerticalScroll("p")
-  	menu.style.left = shiftElement(".menu", "--left")
- 		help.style.visibility ="hidden"		
- 		help.style.zIndex="-5"
- 		helpToMenu.disabled = true  
-})
-
-// Event listeners for chosen game mode
-easyMode.addEventListener("click",  modeHandler)
- 
-hardMode.addEventListener("click",  modeHandler)
-
-let splashToLevel = false
-// Event handler for starting gameplay
-introScreen.addEventListener("animationend", e => { 
-if(splashToLevel){
-  introScreen.style.left = "100vw"
-  choiceDialog.style.left= "110vw"
-  introScreen.style.opacity = "1.0"
-  choiceDialog.style.opacity= "1.0"
-  introMessage.innerHTML = `Round ${gameState.round}`
-  introMessage.style.top = shiftElement(".gameStart", "--top")
-  introMessage.style.left = shiftElement(".gameStart", "--left")
-  beginPlay(game, boardLevelElems, loop)
-    
-   }else{
-   		introScreen.style.opacity="1.0"
-choiceDialog.style.opacity="1.0"
-   }
- }, false)
- 
-/* Remove the round announcement message animation */
-introMessage.addEventListener("animationend", e => {
-introMessage.classList.remove("slideRight")
-
-document.querySelector(".completed").classList.remove("slideLeft")	
-document.querySelector(".completed").classList.add("slideLeft1")	
-
-	 introMessage.style.left="620vw"
-}, false)
-
-// Start splash screen fadeout
-introScreen.addEventListener("animationstart", e => { 
-if(splashToLevel){
-level.style.left = shiftElement(".z-order", "--left")
-level.classList.add("intro-fadein")
-document.querySelector("body").style.backgroundColor=shiftElement(".z-order", "--body-bg")
-  startGame(boardLevelElems, randomize)// end of startGame
-  }// if
-  }, false)
-
-let game; //Game board state
-let startTime //Current delta time 
-let previousTime // Previous delta time
-
-const boardLevelElems = {
-	  labelScore: document.querySelector(".flex-item-score"), 
-	  labelTime: document.querySelector(".flex-item-time"),
-	  labelResult: document.querySelector(".confirm"),
-		btnGenerator: document.querySelector("#gen"),
-	  labelExpr: document.querySelector("#exp"),
-	  audio: document.querySelector("#game_sound") 
-	 }
-Object.freeze(boardLevelElems)
-
-// Splash screen intro music
-const intro = boardLevelElems.audio
-intro.src = sounds[3]	
-// Generates two random integers   
-const randomize = (lower, upper) => {
-    const range = upper - lower + 1
-    const rand1 = Math.random()
-    const rand2 = Math.random()
-    
-    const num1 = Math.floor(rand1 * range) + lower 
-    const num2 =  Math.floor(rand2 * range) + lower
-    return [num1, num2]					
-  }
-</script>
-		</body>
+<head>
+    <title>Snakes, Ladders and Numbers</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/game.css" rel="stylesheet">
+    <script type="module" defer src="js/globals.js"></script>
+    <script type="module" defer src="js/game.js"></script>
+    <script type="module" defer src="js/main.js"></script>
+</head>
+<body>
+    <!-- MENU -->
+    <div class="menu">
+        <button id="upgrade">Panic Mode</button><button id="play">Play</button>
+        <button id="resume">Resume</button>
+        <button id="high-score">High Score</button>		<button id="help">Help</button>
+    </div>
+    <!-- GAME BOARD -->
+    <div class="z-order">
+        <div class="top-container">
+            <div class="flex-item-score">
+                SCORE: 0
+            </div>
+            <div>
+                <img class="confirm" src="" alt="">
+            </div>
+            <div class="flex-item-time">
+            </div>
+        </div>
+        <div class="board-container">
+            <img id="board" class="top" src="images/board1.png" alt="game board">
+            <div class="player"></div>
+        </div>
+        <button id="gen">Generate</button>
+        <span id="exp"><strong>0 + 0</strong></span><!--<span id="counter">5</span>-->
+    </div>
+    <!-- SPLASH AND DIALOGUE -->
+    <div class="intro-bg">
+        <div class="splash"></div>
+    </div>
+    <div class="dialog">
+        <div class="mode-title">
+            Choose level of difficulty
+        </div>
+        <span id="easy">Easy</span>
+        <span id="hard">Hard</span>
+    </div>
+    <!-- GAME START -->
+    <div class="gameStart"></div>
+    <!-- ROUND END -->
+    <div class="completed">
+        Round Completed
+    </div>
+    <!-- GAME OVER -->
+    <img class="game-over" src="images/gameover.png" class="game-over" alt="game over image">
+    <audio id="game_sound">
+        <source src="sounds/app_src_main_res_raw_intro.mp3" type="audio/mpeg"></audio>
+    <!-- SCORE RESULTS -->
+    <div class="score-sheet">
+        <span id="score-label">Precision</span>
+        <span id="score-amount">1000000</span>
+        <span id="time-label">Time Bonus</span>
+        <span id="time-bonus">10000</span>
+        <span id="final-scorelabel">Final Score</span>
+        <span id="final-score">1000000</span>
+        <button id="register">Register your score!</button><button id="close">Close</button>
+    </div>
+    <!-- HIGH SCORES  -->
+    <div class="score-screen-container">
+        <div class="score-screen"	>
+            <div id="high-scores-title">
+                HIGH SCORES
+            </div>
+            <span id="pos-one"></span>
+            <span id="pos-one-score"></span>
+            <span id="pos-two"></span>
+            <span id="pos-two-score"></span>
+            <span id="pos-three"></span>
+            <span id="pos-three-score"></span>
+            <span id="pos-four"></span>
+            <span id="pos-four-score"></span>
+            <span id="pos-five"></span>
+            <span id="pos-five-score"></span>
+            <button id="close-scores"><span>Back</span></button>
+        </div>
+    </div>
+    <!-- REGISTER -->
+    <div class="initials">
+        <div class="form-container">
+            <div class="form-label">
+                <label id="userNameLabel" for="username">Enter your username</label>
+            </div>
+            <input type="text" id="username" name="username" placeholder="username"	>
+            <button id="submitUserName" >Finnish</button>	<span id="error"></span>
+        </div>
+    </div>
+    <!-- HELP -->
+    <div class="help-container">
+        <div class="help">
+            <p>
+                <span id="title1">The Menu Screen</span><br>1. To start new game  press Play on the menu screen.<br>2. To play previously saved game, press Resume on menu screen.<br>3. To view high scores, press High Scores button on the menu screen.<br>4. To get help, press Help on the menu screen.<br><span id="notice" style="hsla(360, 100%, 50%, 1.0);">Note! The game uses cookies to store game state.</span><br> <span id="title2">Choosing Modes</span><br>Change the game difficulty level by pressing  easy or hard mode button on  title screen.<br><span id="title3">Game Board</span><br>1. To move the player sprite, you first generate an arithmetic expression by pressing the Generate button.<br>2. The resulting expression will tell you by how many squares to move forward or backward.<br>3. Positive means moves forward and negative means move backward.<br>4. Click on the square you have chosen on the game board.<br>5. The game ends when the timer reaches 0 or you have reached the the square numbered 100.<br>6. If your total score is high enough, you can enter your username or any name to be displayed on the high scores screen.
+            </p>
+            <button id="close-help">Back</button>
+        </div>
+    </div>
+    <div class="congrats">
+        CONGRATULATIONS!<br>
+        YOU ARE THE SUPREME CHAMPION
+    </div>
+</body>
 </html>
+
 
 
 
