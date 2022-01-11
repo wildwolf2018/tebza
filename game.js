@@ -186,7 +186,7 @@ export default class Game{
 	    this.generateExp();
 	    }
 	  });
-	  this.targets.labelResult.setAttribute("src", "images/tick.png");
+	  this.targets.labelResult.setAttribute("src", "tick.png");
   }
 		
   set started(status){
@@ -318,7 +318,8 @@ export default class Game{
        timeReset = true
        challengeDelay = true  
     }
-  /* Display a tick for correct move */   this.targets.labelResult.setAttribute("src", "images/tick.png");
+  /* Display a tick for correct move */   
+     this.targets.labelResult.setAttribute("src", "tick.png");
      this.targets.labelResult.style.width = "5vh";
      this.targets.labelResult.style.height="4vh";
      this.finalPos = choiceIndex;
@@ -331,7 +332,8 @@ export default class Game{
       this.numCorrectMoves++;  
       this.state.correct = this.numCorrectMoves
     } else{
-   /* Display a cross for incorrect move */   this.targets.labelResult.setAttribute("src", "images/cross.png");
+   /* Display a cross for incorrect move */   
+      this.targets.labelResult.setAttribute("src", "cross.png");
       this.targets.audio.src = sounds[1];
       this.targets.audio.play();
       this.targets.labelResult.style.width="5vh";
