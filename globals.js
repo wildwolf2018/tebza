@@ -50,8 +50,8 @@ const snakes3 = new Map([["15","07"], ["51","27"], ["77","24"], ["92","88"], ["9
 /* BOARD 4, 5 */
 const ladders4 = new Map([["07","28"], ["21","60"], ["53","67"], ["64","96"], ["71","92"]])
 const snakes4 = new Map([["22","16"], ["44","04"], ["51","32"], ["66","27"], ["89","49"], ["98","23"]])
-export const sounds = ["sounds/app_src_main_res_raw_correct.mp3", "sounds/app_src_main_res_raw_incorrect.mp3", "sounds/app_src_main_res_raw_metalgong.mp3", "sounds/app_src_main_res_raw_intro.mp3", "sounds/app_src_main_res_raw_snake.mp3", "sounds/mixkit-sad-game-over-trombone-471.wav",
-"sounds/mixkit-game-over-dark-orchestra-633.wav"]				
+export const sounds = ["app_src_main_res_raw_correct.mp3", "app_src_main_res_raw_incorrect.mp3", "app_src_main_res_raw_metalgong.mp3", "app_src_main_res_raw_intro.mp3", "app_src_main_res_raw_snake.mp3", "mixkit-sad-game-over-trombone-471.wav",
+"mixkit-game-over-dark-orchestra-633.wav"]				
 Object.freeze(sounds)
 
 export const gameState = {
