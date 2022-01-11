@@ -73,7 +73,7 @@ class Cell {
 }
 
 const cells = [[], [], [], [], [], [], [], [], [], []] // Board game squares
-const gameBoards = ["images/board1.png", "images/board2.jpg", "images/board3.jpg", "images/board4.jpg", "images/board5.jpg"]
+const gameBoards = ["board1.png", "board2.jpg", "board3.jpg", "board4.jpg", "board5.jpg"]
 const board = getDomElem("#board")
 const backImage = getDomElem("#back")
 const playerHeight = board.height * 0.05
