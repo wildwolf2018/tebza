@@ -1,12 +1,13 @@
-function setCookie(cookieName, cookieValue, exDays){
+import Game from "./game.js"
+
+export function setCookie(cookieName, cookieValue, exDays){
 		 const date = new Date()
 		 date.setTime(date.getTime() + (exDays*24*60*60*1000))	
 		/* const expDate = "Thur, 01 Jan 1970 00:00:00 UTC"*/
 		 let expires = "expires=" + date.toUTCString()
 		 document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/"
 	}
-	
-	function getCookie(cookieName){
+export function getCookie(cookieName){
 		let name = cookieName + "="
 		let decodedCookie = decodeURIComponent(document.cookie)		
 		let ca = decodedCookie.split(";")
@@ -22,17 +23,15 @@ function setCookie(cookieName, cookieValue, exDays){
 		return ""
 	}
 	
-function checkCookie(cookieName, cookieValue){
+export function checkCookie(cookieName, cookieValue){
 	let value = getCookie(cookieName)
-	if(value != ""){
-		/*		alert(value)	*/
-	}else{
-		 setCookie(cookieName , cookieValue, 1)
+	if(value === ""){
+		setCookie(cookieName , cookieValue, 1)
 	}
 	return value
 }
 	
-function getDomElem(elem){
+export function getDomElem(elem){
 		return document.querySelector(elem);
 }
 /*BOARD 1*/	
@@ -51,11 +50,11 @@ const snakes3 = new Map([["15","07"], ["51","27"], ["77","24"], ["92","88"], ["9
 /* BOARD 4, 5 */
 const ladders4 = new Map([["07","28"], ["21","60"], ["53","67"], ["64","96"], ["71","92"]])
 const snakes4 = new Map([["22","16"], ["44","04"], ["51","32"], ["66","27"], ["89","49"], ["98","23"]])
-const sounds = ["app_src_main_res_raw_correct.mp3", "app_src_main_res_raw_incorrect.mp3", "app_src_main_res_raw_metalgong.mp3", "app_src_main_res_raw_intro.mp3", "app_src_main_res_raw_snake.mp3", "mixkit-sad-game-over-trombone-471.wav",
-"mixkit-game-over-dark-orchestra-633.wav"]				
+export const sounds = ["sounds/app_src_main_res_raw_correct.mp3", "sounds/app_src_main_res_raw_incorrect.mp3", "sounds/app_src_main_res_raw_metalgong.mp3", "sounds/app_src_main_res_raw_intro.mp3", "sounds/app_src_main_res_raw_snake.mp3", "sounds/mixkit-sad-game-over-trombone-471.wav",
+"sounds/mixkit-game-over-dark-orchestra-633.wav"]				
 Object.freeze(sounds)
 
-const gameState = {
+export const gameState = {
   difficulty: "Easy",
   gameOver: true,
   score: 0, 
@@ -68,7 +67,7 @@ const gameState = {
   isChallenge: 0
  }
  
-const recordedScores = {
+export const recordedScores = {
 		initials: ["AAA", "BBB", "CCC", "DDD", "EEE"],
 		scores: ["5000", "4000", "3000", "2000", "1000"]
 }
@@ -76,26 +75,53 @@ const recordedScores = {
 
 // Game mode choice buttons   
 // Easy mode
-const easyMode =  document.querySelector("#easy");
+export const easyMode =  document.querySelector("#easy");
 // Hard mode
-const hardMode = document.querySelector("#hard");
+export const hardMode = document.querySelector("#hard");
 
 // Menu buttons
 // Challenge button
-const challengeButton = document.querySelector("#upgrade")
+export const challengeButton = document.querySelector("#upgrade")
 // Play button
-const playButton = document.querySelector("#play")
+export const playButton = document.querySelector("#play")
 // Resume button
-const resumeButton = document.querySelector("#resume")
+export const resumeButton = document.querySelector("#resume")
 // High score buttonconst 
-const highScoreButton = document.querySelector("#high-score")
+export const highScoreButton = document.querySelector("#high-score")
 // Help button
-const helpButton = getDomElem("#help")
+export const helpButton = getDomElem("#help")
 
-const initialsIds = ["#pos-one", "#pos-two", "#pos-three", "#pos-four", "#pos-five"]
+export const initialsIds = ["#pos-one", "#pos-two", "#pos-three", "#pos-four", "#pos-five"]
 Object.freeze(initialsIds)
 
-const scoresIds = ["#pos-one-score", "#pos-two-score", "#pos-three-score", "#pos-four-score", "#pos-five-score"]
+export const scoresIds = ["#pos-one-score", "#pos-two-score", "#pos-three-score", "#pos-four-score", "#pos-five-score"]
 Object.freeze(scoresIds)
+
+export const timeObj = {startTime: undefined, previousTime: 0, gameTime: 0}
+
+export function loop(timestamp){
+  if(timeObj.startTime == undefined)
+    timeObj.startTime = timestamp
+
+  const elapsed = timestamp - timeObj.startTime;
+  if(timeObj.previousTime !== timestamp){
+    let time = Math.min(0.001 * elapsed, timeObj.gameTime)
+    if(!Game.game.started){
+      timeObj.startTime = undefined
+      time = 0
+      Game.game.update(time)
+    }else{
+      Game.game.update(time)
+    }// if-else
+
+    if(elapsed < timeObj.gameTime){
+      timeObj.previousTime = timestamp
+      window.requestAnimationFrame(loop)
+    }// if
+  }// if
+}// end loop
+
+export {ladders, ladders2, ladders3, ladders4, snakes, snakes2, snakes3, snakes4}
+
 
 
