@@ -1,0 +1,27 @@
+div.nav {
+    background-color: black;
+    padding-left: 10vw;
+    padding: 10px 0;
+}
+a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+.page-heading {
+    text-align: center;
+}
+.about-me {
+    color: black;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+}
+@media (max-width:1920px) and (orientation: landscape) {
+    body {
+        width: 70vw;
+        margin-left: 15vw;
+    }
+}
